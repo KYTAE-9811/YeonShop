@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>주문 상세</title>
+  <link rel="stylesheet" href="/css/bootstrap.min.css"></head>
+<body>
+<div class="container mt-5">
+  <h2 class="text-center mb-4">주문 상세</h2>
+  <table class="table table-bordered table-striped">
+    <thead class="thead-dark">
+    <tr>
+      <th>상품명</th>
+      <th>상품 개수</th>
+      <th>가격</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="orderItem : ${orderItems}">
+      <td th:text="${orderItem.productName}"></td>
+      <td th:text="${orderItem.quantity}"></td>
+      <td th:text="${orderItem.productPrice}"></td>
+    </tr>
+    </tbody>
+  </table>
+  <a href="/orders" class="btn btn-secondary mt-3">주문목록으로 돌아가기</a>
+</div>
+<script src="/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

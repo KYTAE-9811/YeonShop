@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>연샾</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #e9ecef; /* 더 밝고 중립적인 배경색 */
+            font-family: 'Helvetica', sans-serif;
+        }
+
+        /* 헤더 스타일 */
+        .header-section {
+            background-image: url('/images/header-bg.jpeg');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+        }
+
+        .header-section h2 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        /* 상품 카드 스타일 */
+        .product-section {
+            margin: 40px 0;
+        }
+
+        .card {
+            border: none;
+            transition: transform 0.3s ease;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card img {
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            height: 250px;
+            object-fit: cover;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .card-text {
+            color: #6c757d;
+        }
+
+        /* 버튼 스타일 */
+        .btn-primary {
+            background-color: #28a745; /* 더 진하고 구분이 되는 녹색 */
+            border-color: #28a745;
+            padding: 10px 20px;
+            font-size: 1rem;
+            border-radius: 50px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: #218838;
+        }
+
+        /* 마이페이지 및 로그아웃 버튼 */
+        .header-buttons {
+            margin-top: 20px;
+        }
+
+        .header-buttons .btn {
+            margin: 5px;
+        }
+
+        .btn-outline-light {
+            border-color: #ffffff;
+            color: #ffffff;
+        }
+
+        .btn-outline-light:hover {
+            background-color: #ffffff;
+            color: #007bff;
+        }
+    </style>
+</head>
+<body>
+<!-- 헤더 섹션 -->
+<header class="header-section">
+    <div class="container">
+        <h2>Yeon Shop</h2>
+        <!-- 로그인 정보 표시 -->
+        <div th:if="${#authentication.name != 'anonymousUser'}" class="header-buttons">
+            <p>안녕하세요, <span th:text="${#authentication.principal.username}"></span> 님!</p>
+            <form th:action="@{/logout}" method="post" class="d-inline-block">
+                <button type="submit" class="btn btn-outline-light">로그아웃</button>
+            </form>
+            <a th:href="@{/myPage}" class="btn btn-outline-light">마이페이지</a>
+        </div>
+        <div th:if="${#authentication.name == 'anonymousUser'}" class="header-buttons">
+            <a th:href="@{/login}" class="btn btn-outline-light">로그인</a>
+        </div>
+    </div>
+</header>
+
+<!-- 상품 목록 섹션 -->
+<div class="container product-section">
+    <h2 class="text-center mb-4">인기 상품</h2>
+    <div class="row">
+        <!-- 상품 리스트를 반복하여 표시 -->
+        <div class="col-md-4" th:each="product : ${products}">
+            <div class="card">
+                <a th:href="@{/products/{productId}/details(productId=${product.id})}">
+                    <img th:src="@{${product.imageUrl}}" alt="상품 이미지" class="img-fluid" />
+                    <div class="card-body text-center">
+                        <h5 class="card-title" th:text="${product.productName}">상품 이름</h5>
+                        <p class="card-text" th:text="${#numbers.formatDecimal(product.price, 0, 0)} + '원'">가격</p>
+                        <p class="card-text" th:text="${product.description}">설명</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 관리자 상품 등록 버튼 -->
+<div sec:authorize="hasRole('ADMIN')" class="text-center mt-4">
+    <a th:href="@{/admin/product/add}" class="btn btn-primary">상품 등록</a>
+</div>
+
+<!-- Bootstrap JS CDN -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
